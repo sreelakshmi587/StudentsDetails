@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
+using StudentsDetails.Model;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Collections.Generic;
 
 namespace StudentsDetails.Controllers
 {
@@ -21,12 +23,13 @@ namespace StudentsDetails.Controllers
         [SwaggerOperation(SwaggerConstants.ReturnsAllStudents)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentsListReturned)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentsListNotFound)]
-        public ActionResult<string[]> GetStudentNames()
+        public ActionResult<List<StudentDetails>> GetStudentNames()
         {
             string[] studentNames = _config.GetSection("Students").Get<string[]>();
 
             return Ok(studentNames);
         }
+
     }
 
 
