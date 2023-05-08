@@ -25,9 +25,11 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentsListNotFound)]
         public ActionResult<List<StudentDetails>> GetStudentNames()
         {
-            string[] studentNames = _config.GetSection("Students").Get<string[]>();
+            StudentDetails studentDetails = new();
+           _config.GetSection("Students").Bind(studentDetails);
 
-            return Ok(studentNames);
+           return Ok(studentDetails.Name);
+
         }
 
     }

@@ -2,6 +2,6 @@
 {
     public class StudentDetails
     {
-        public string Name { get; set; }
+        public string[] Name { get; set; }
     }
 }
