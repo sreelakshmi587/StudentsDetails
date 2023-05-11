@@ -10,8 +10,8 @@
         public const string StudentDetailsReturned = "Student Details Returned successfully.";
         public const string StudentDetailsNotFound = "Student Details Not Found";
 
-        public const string ReturnsStudentDetailsById = "Returns list of student details";
-        public const string StudentDetailsByIdReturned = "Student Details Returned successfully.";
-        public const string StudentDetailsByIdNotFound = "Student Details Not Found";
+        public const string ReturnsStudentDetailsById = "Returns student details by id";
+        public const string StudentDetailsByIdReturned = "Student Details by id Returned successfully.";
+        public const string StudentDetailsByIdNotFound = "Student Details for this id is Not Found";
     }
 }

@@ -31,6 +31,7 @@ namespace StudentsDetails
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentsDetails", Version = "v1" });
+                c.EnableAnnotations();
             });
         }
 

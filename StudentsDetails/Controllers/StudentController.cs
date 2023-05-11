@@ -106,7 +106,7 @@ namespace StudentsDetails.Controllers
                 }
                 else
                 {
-                    return null;
+                    return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
                 }
             }
 
