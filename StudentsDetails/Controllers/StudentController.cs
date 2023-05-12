@@ -3,11 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
 using StudentsDetails.Model;
+using StudentsDetails.Services.StudentsDetails;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IO;
 
 namespace StudentsDetails.Controllers
 {
@@ -16,13 +14,13 @@ namespace StudentsDetails.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IConfiguration _config;
-        public string cnn = " ";
+        private IStudentDetailsService StudentDetailsService { get; }
 
-        public StudentController(IConfiguration config)
+        public StudentController(IConfiguration config
+            , IStudentDetailsService studentDetailsService)
         {
             _config = config;
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.Development.json").Build();
-            cnn = builder.GetSection("ConnectionStrings:StudentsConnectionString").Value;
+            StudentDetailsService = studentDetailsService;
         }
 
         [HttpGet("get-student-names")]
@@ -35,7 +33,6 @@ namespace StudentsDetails.Controllers
             _config.GetSection("Students").Bind(studentNames);
 
             return Ok(studentNames.Name);
-
         }
 
         [HttpGet("get-all-students")]
@@ -44,35 +41,9 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsNotFound)]
         public ActionResult<List<StudentDetails>> GetAllStudents()
         {
-            List<StudentDetails> students = new();
-            try
-            {
-                using (SqlConnection con = new SqlConnection(cnn))
-                {
-                    string query = "Select * from StudentDetails";
-                    SqlCommand cm = new SqlCommand(query, con);
-                    con.Open();
-                    SqlDataReader reader = cm.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        students.Add(new StudentDetails()
-                        {
-                            Id = int.Parse(reader["Id"].ToString()),
-                            AdmissionNo = reader["AdmissionNo"].ToString(),
-                            Name = reader["Name"].ToString(),
-                            Class = int.Parse(reader["Class"].ToString()),
-                            Address = reader["Address"].ToString()
-                        }
-                        );
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            };
+            var studentList = StudentDetailsService.GetAllStudents();
 
-            return students;
+            return studentList;
         }
 
         [HttpGet("get-student-details-by-id")]
@@ -81,39 +52,14 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsByIdNotFound)]
         public ActionResult<StudentDetails> GetStudentById(int id)
         {
+            var student = StudentDetailsService.GetStudentById(id);
 
-            using (SqlConnection connection = new SqlConnection(cnn))
+            if (student != null)
             {
-                string query = "SELECT * FROM StudentDetails WHERE Id = @Id";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Id", id);
-
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    StudentDetails student = new StudentDetails
-                    {
-                        Id = int.Parse(reader["Id"].ToString()),
-                        AdmissionNo = reader["AdmissionNo"].ToString(),
-                        Name = reader["Name"].ToString(),
-                        Class = int.Parse(reader["Class"].ToString()),
-                        Address = reader["Address"].ToString()
-                    };
-
-                    return student;
-                }
-                else
-                {
-                    return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
-                }
+                return student;
             }
 
+            return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
         }
-
     }
-
-
-
 }
