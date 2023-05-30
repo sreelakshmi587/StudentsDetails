@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 
 namespace StudentsDetails.Services.StudentsDetails
 {
@@ -16,10 +15,10 @@ namespace StudentsDetails.Services.StudentsDetails
         public StudentDetailsService(IConfiguration config)
         {
             _config = config;
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.Development.json").Build();
-            cnn = builder.GetSection("ConnectionStrings:StudentsConnectionString").Value;
+            cnn = _config.GetConnectionString("StudentsConnectionString");
+
         }
-        public ActionResult<List<StudentDetails>> GetAllStudents()
+        public List<StudentDetails> GetAllStudents()
         {
             List<StudentDetails> students = new();
             try
@@ -52,7 +51,7 @@ namespace StudentsDetails.Services.StudentsDetails
             return students;
         }
 
-        public ActionResult<StudentDetails> GetStudentById(int id)
+        public StudentDetails GetStudentById(int id)
         {
             using (SqlConnection connection = new(cnn))
             {

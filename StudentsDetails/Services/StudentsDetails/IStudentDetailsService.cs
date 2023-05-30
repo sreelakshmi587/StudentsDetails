@@ -6,7 +6,7 @@ namespace StudentsDetails.Services.StudentsDetails
 {
     public interface IStudentDetailsService
     {
-        ActionResult<List<StudentDetails>> GetAllStudents();
-        ActionResult<StudentDetails> GetStudentById(int id);
+        List<StudentDetails> GetAllStudents();
+        StudentDetails GetStudentById(int id);
     }
 }

@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
+using StudentsDetails.Infrastructure.ViewModels;
 using StudentsDetails.Model;
 using StudentsDetails.Persistence.Context;
 using StudentsDetails.Services.StudentsDetails;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StudentsDetails.Controllers
 {
@@ -18,15 +17,21 @@ namespace StudentsDetails.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private IMapper Mapper { get; }
         private IStudentDetailsService StudentDetailsService { get; }
+        private IStudentDetailsUsingEfService StudentDetailsUsingEfService { get; }
         private readonly StudentsDbContext Context;
 
         public StudentController(IConfiguration config
+            , IMapper mapper
             , IStudentDetailsService studentDetailsService
+            , IStudentDetailsUsingEfService studentDetailsUsingEfService
             , StudentsDbContext context)
         {
             _config = config;
+            Mapper = mapper;
             StudentDetailsService = studentDetailsService;
+            StudentDetailsUsingEfService = studentDetailsUsingEfService;
             Context = context;
         }
 
@@ -57,7 +62,7 @@ namespace StudentsDetails.Controllers
             return studentList;
         }
 
-        [HttpGet("get-student-details-by-id")]
+        [HttpGet("get-student-details-by-id/{id}")]
         [SwaggerOperation(SwaggerConstants.ReturnsStudentDetailsById)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsByIdReturned)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsByIdNotFound)]
@@ -79,27 +84,77 @@ namespace StudentsDetails.Controllers
         [SwaggerOperation(SwaggerConstants.ReturnsStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsReturned)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsNotFound)]
-        public async Task<ActionResult<List<StudentDetails>>> GetAllStudentsDetails()
+        public ActionResult<List<StudentDetailsResponse>> GetAllStudentsDetails()
         {
-            var studentList = await Context.StudentDetails.AsNoTracking().ToListAsync();
-
-            return studentList;
+            var studentList = StudentDetailsUsingEfService.GetAllStudentsDetails();
+            return Mapper.Map<List<StudentDetailsResponse>>(studentList);
         }
 
-        [HttpGet("get-student-data-by-id")]
+        [HttpGet("get-student-data-by-id/{id}")]
         [SwaggerOperation(SwaggerConstants.ReturnsStudentDetailsById)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsByIdReturned)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsByIdNotFound)]
-        public ActionResult<StudentDetails> GetStudentDetailsById(int id)
+        public ActionResult<StudentDetailsResponse> GetStudentDetailsById(int id)
         {
-            var student = Context.StudentDetails.FirstOrDefault(s => s.Id == id);
+            var student = StudentDetailsUsingEfService.GetStudentDetailsById(id);
 
             if (student != null)
             {
-                return student;
+                return Mapper.Map<StudentDetailsResponse>(student);
             }
 
             return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
+        }
+
+        [HttpPost("add-student-details")]
+        [SwaggerOperation(SwaggerConstants.AddsStudentDetails)]
+        [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsAdded)]
+        [SwaggerResponse(StatusCodes.Status409Conflict, SwaggerConstants.StudentDetailsByIdNotFound)]
+        public ActionResult<StudentDetailsResponse> AddStudentDetails(StudentDetails studentDetails)
+        {
+
+            var newStudent = StudentDetailsUsingEfService.AddStudentDetail(studentDetails);
+
+            if (newStudent != null)
+            {
+                return Ok(Mapper.Map<StudentDetailsResponse>(newStudent));
+            }
+
+            return Conflict(SwaggerConstants.StudentAlreadyExists);
+        }
+
+        [HttpPut("update-student-details/{id}")]
+        [SwaggerOperation(SwaggerConstants.UpdateStudentDetails)]
+        [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsUpdated)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, SwaggerConstants.BadRequestMessage)]
+        public ActionResult<StudentDetailsResponse> UpdateStudentDetails(int id, StudentDetails studentDetails)
+        {
+
+            var student = StudentDetailsUsingEfService.UpdateStudentDetails(id, studentDetails);
+
+            if (student != null)
+            {
+                return Ok(Mapper.Map<StudentDetailsResponse>(student));
+            }
+
+            return BadRequest(SwaggerConstants.BadRequestMessage);
+        }
+
+        [HttpDelete("delete-student-details/{id}")]
+        [SwaggerOperation(SwaggerConstants.DeletesStudentDetails)]
+        [SwaggerResponse(StatusCodes.Status204NoContent, SwaggerConstants.StudentDetailsDeleted)]
+        [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsByIdNotFound)]
+        public ActionResult<StudentDetailsResponse> DeleteStudentDetails(int id)
+        {
+            var student = StudentDetailsUsingEfService.GetStudentDetailsById(id);
+            if (student != null)
+            {
+                StudentDetailsUsingEfService.DeleteStudent(id);
+
+                return NoContent();
+            }
+            return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
+
         }
     }
 }

@@ -13,5 +13,13 @@
         public const string ReturnsStudentDetailsById = "Returns student details by id";
         public const string StudentDetailsByIdReturned = "Student Details by id Returned successfully.";
         public const string StudentDetailsByIdNotFound = "Student Details for this id is Not Found";
+        public const string StudentAlreadyExists = "Student Already Exists";
+        public const string AddsStudentDetails = "Adds student details";
+        public const string StudentDetailsAdded = "Student details added";
+        public const string UpdateStudentDetails = "Updates student details";
+        public const string StudentDetailsUpdated = "Student details updated";
+        public const string BadRequestMessage = "Bad Request";
+        public const string DeletesStudentDetails = "Deletes student details";
+        public const string StudentDetailsDeleted = "Student details deleted";
     }
 }
