@@ -112,6 +112,10 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status409Conflict, SwaggerConstants.StudentDetailsByIdNotFound)]
         public ActionResult<StudentDetailsResponse> AddStudentDetails(StudentDetails studentDetails)
         {
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(ModelState);
+            }
 
             var newStudent = StudentDetailsUsingEfService.AddStudentDetail(studentDetails);
 
@@ -129,6 +133,10 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, SwaggerConstants.BadRequestMessage)]
         public ActionResult<StudentDetailsResponse> UpdateStudentDetails(int id, StudentDetails studentDetails)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var student = StudentDetailsUsingEfService.UpdateStudentDetails(id, studentDetails);
 

@@ -11,5 +11,10 @@ namespace StudentsDetails.Persistence.Context
         }
 
         public DbSet<StudentDetails> StudentDetails { get; set; }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<StudentDetails>().HasKey(s => s.Id);
+        }
     }
 }
