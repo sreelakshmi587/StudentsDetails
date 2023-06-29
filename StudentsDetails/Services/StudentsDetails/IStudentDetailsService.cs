@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StudentsDetails.Model;
+﻿using StudentsDetails.Model;
 using System.Collections.Generic;
 
 namespace StudentsDetails.Services.StudentsDetails

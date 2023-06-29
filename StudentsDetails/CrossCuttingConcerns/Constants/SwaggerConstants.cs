@@ -21,5 +21,6 @@
         public const string BadRequestMessage = "Bad Request";
         public const string DeletesStudentDetails = "Deletes student details";
         public const string StudentDetailsDeleted = "Student details deleted";
+        public const string UserNotFound = "User Not Found";
     }
 }

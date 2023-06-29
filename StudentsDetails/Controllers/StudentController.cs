@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ namespace StudentsDetails.Controllers
 {
     [ApiController]
     [Route("student")]
+    [Authorize]
     public class StudentController : ControllerBase
     {
         private readonly IConfiguration _config;
