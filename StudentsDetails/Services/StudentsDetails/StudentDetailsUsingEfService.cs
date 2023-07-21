@@ -39,7 +39,7 @@ namespace StudentsDetails.Services.StudentsDetails
 
         public StudentDetails AddStudentDetail(StudentDetails studentDetails)
         {
-            var existingStudent = Context.StudentDetails.Where(s => s.Id == studentDetails.Id && s.AdmissionNo == studentDetails.AdmissionNo).FirstOrDefault();
+            var existingStudent = Context.StudentDetails.Where(s => s.AdmissionNo == studentDetails.AdmissionNo).FirstOrDefault();
             if (existingStudent == null)
             {
                 Context.StudentDetails.Add(studentDetails);

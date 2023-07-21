@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
+using StudentsDetails.Infrastructure.ActionFilters;
 using StudentsDetails.Infrastructure.ViewModels;
 using StudentsDetails.Model;
 using StudentsDetails.Persistence.Context;
@@ -89,10 +90,12 @@ namespace StudentsDetails.Controllers
         public ActionResult<List<StudentDetailsResponse>> GetAllStudentsDetails()
         {
             var studentList = StudentDetailsUsingEfService.GetAllStudentsDetails();
+
             return Mapper.Map<List<StudentDetailsResponse>>(studentList);
         }
 
         [HttpGet("get-student-data-by-id/{id}")]
+        [ServiceFilter(typeof(ValidateIdAttribute))]
         [SwaggerOperation(SwaggerConstants.ReturnsStudentDetailsById)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsByIdReturned)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsByIdNotFound)]
@@ -100,71 +103,47 @@ namespace StudentsDetails.Controllers
         {
             var student = StudentDetailsUsingEfService.GetStudentDetailsById(id);
 
-            if (student != null)
-            {
-                return Mapper.Map<StudentDetailsResponse>(student);
-            }
-
-            return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
+            return Mapper.Map<StudentDetailsResponse>(student);
         }
 
         [HttpPost("add-student-details")]
+        [ServiceFilter(typeof(RequestValidationFilterAttribute))]
         [SwaggerOperation(SwaggerConstants.AddsStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsAdded)]
         [SwaggerResponse(StatusCodes.Status409Conflict, SwaggerConstants.StudentDetailsByIdNotFound)]
         public ActionResult<StudentDetailsResponse> AddStudentDetails(StudentDetails studentDetails)
         {
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest(ModelState);
-            }
 
             var newStudent = StudentDetailsUsingEfService.AddStudentDetail(studentDetails);
 
-            if (newStudent != null)
-            {
-                return Ok(Mapper.Map<StudentDetailsResponse>(newStudent));
-            }
-
-            return Conflict(SwaggerConstants.StudentAlreadyExists);
+            return Ok(Mapper.Map<StudentDetailsResponse>(newStudent));
         }
 
         [HttpPut("update-student-details/{id}")]
+        [ServiceFilter(typeof(RequestValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateIdAttribute))]
         [SwaggerOperation(SwaggerConstants.UpdateStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsUpdated)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, SwaggerConstants.BadRequestMessage)]
         public ActionResult<StudentDetailsResponse> UpdateStudentDetails(int id, StudentDetails studentDetails)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             var student = StudentDetailsUsingEfService.UpdateStudentDetails(id, studentDetails);
 
-            if (student != null)
-            {
-                return Ok(Mapper.Map<StudentDetailsResponse>(student));
-            }
+            return Ok(Mapper.Map<StudentDetailsResponse>(student));
 
-            return BadRequest(SwaggerConstants.BadRequestMessage);
         }
 
         [HttpDelete("delete-student-details/{id}")]
+        [ServiceFilter(typeof(ValidateIdAttribute))]
         [SwaggerOperation(SwaggerConstants.DeletesStudentDetails)]
         [SwaggerResponse(StatusCodes.Status204NoContent, SwaggerConstants.StudentDetailsDeleted)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsByIdNotFound)]
         public ActionResult<StudentDetailsResponse> DeleteStudentDetails(int id)
         {
-            var student = StudentDetailsUsingEfService.GetStudentDetailsById(id);
-            if (student != null)
-            {
-                StudentDetailsUsingEfService.DeleteStudent(id);
+            StudentDetailsUsingEfService.DeleteStudent(id);
 
-                return NoContent();
-            }
-            return NotFound(SwaggerConstants.StudentDetailsByIdNotFound);
-
+            return NoContent();
         }
     }
 }

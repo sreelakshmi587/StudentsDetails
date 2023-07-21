@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StudentsDetails.Infrastructure.ActionFilters;
 using StudentsDetails.Infrastructure.Extensions.Automapper;
 using StudentsDetails.Persistence.Context;
 using StudentsDetails.Services.StudentsDetails;
@@ -39,6 +41,12 @@ namespace StudentsDetails
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 });
             services.AddControllers();
+            services.AddScoped<RequestValidationFilterAttribute>();
+            services.AddScoped<ValidateIdAttribute>();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentsDetails", Version = "v1" });
