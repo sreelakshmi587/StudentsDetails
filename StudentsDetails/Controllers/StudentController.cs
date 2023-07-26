@@ -84,6 +84,7 @@ namespace StudentsDetails.Controllers
         //Using EF Core
 
         [HttpGet("get-all-students-details")]
+        [Authorize(Roles = "Admin, Student")]
         [SwaggerOperation(SwaggerConstants.ReturnsStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsReturned)]
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsNotFound)]
@@ -95,6 +96,7 @@ namespace StudentsDetails.Controllers
         }
 
         [HttpGet("get-student-data-by-id/{id}")]
+        [Authorize(Roles ="Admin, Student")]
         [ServiceFilter(typeof(ValidateIdAttribute))]
         [SwaggerOperation(SwaggerConstants.ReturnsStudentDetailsById)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsByIdReturned)]
@@ -107,6 +109,7 @@ namespace StudentsDetails.Controllers
         }
 
         [HttpPost("add-student-details")]
+        [Authorize(Roles = "Admin")]
         [ServiceFilter(typeof(RequestValidationFilterAttribute))]
         [SwaggerOperation(SwaggerConstants.AddsStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsAdded)]
@@ -120,21 +123,23 @@ namespace StudentsDetails.Controllers
         }
 
         [HttpPut("update-student-details/{id}")]
+        [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(RequestValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateIdAttribute))]
         [SwaggerOperation(SwaggerConstants.UpdateStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsUpdated)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, SwaggerConstants.BadRequestMessage)]
-        public ActionResult<StudentDetailsResponse> UpdateStudentDetails(int id, StudentDetails studentDetails)
+        public ActionResult<StudentDetailsResponse> UpdateStudentDetails([FromBody]StudentDetails studentDetails)
         {
 
-            var student = StudentDetailsUsingEfService.UpdateStudentDetails(id, studentDetails);
+            var student = StudentDetailsUsingEfService.UpdateStudentDetails(studentDetails);
 
             return Ok(Mapper.Map<StudentDetailsResponse>(student));
 
         }
 
         [HttpDelete("delete-student-details/{id}")]
+        [Authorize(Roles = "Admin")]
         [ServiceFilter(typeof(ValidateIdAttribute))]
         [SwaggerOperation(SwaggerConstants.DeletesStudentDetails)]
         [SwaggerResponse(StatusCodes.Status204NoContent, SwaggerConstants.StudentDetailsDeleted)]

@@ -15,12 +15,20 @@ namespace StudentsDetails.Infrastructure.ActionFilters
         {
             _studentDetailsUsingEfService = studentDetailsUsingEfService;
         }
-
         public void OnActionExecuting(ActionExecutingContext context)
         {
             if (!context.ModelState.IsValid)
             {
                 context.Result = new UnprocessableEntityObjectResult(context.ModelState);
+                return;
+            }
+
+            var httpMethod = context.HttpContext.Request.Method;
+            var isHttpPostOrPut = httpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase) ||
+                                  httpMethod.Equals("PUT", StringComparison.OrdinalIgnoreCase);
+
+            if (!isHttpPostOrPut)
+            {
                 return;
             }
 
@@ -32,11 +40,22 @@ namespace StudentsDetails.Infrastructure.ActionFilters
                 return;
             }
 
+
             var existingStudent = _studentDetailsUsingEfService.GetStudentDetailsById(studentModel.Id);
+            if (string.Equals(httpMethod, "PUT", StringComparison.OrdinalIgnoreCase) && existingStudent == null)
+            {
+                context.Result = new NotFoundObjectResult(SwaggerConstants.InvalidId);
+                return;
+            }
 
             if (existingStudent != null)
             {
-                context.Result = new ConflictObjectResult(SwaggerConstants.StudentAlreadyExists);
+                if (string.Equals(httpMethod, "POST", StringComparison.OrdinalIgnoreCase) &&
+                    existingStudent.AdmissionNo == studentModel.AdmissionNo)
+                {
+                    context.Result = new ConflictObjectResult(SwaggerConstants.StudentAlreadyExists);
+                }
+
             }
         }
 

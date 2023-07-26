@@ -53,9 +53,9 @@ namespace StudentsDetails.Services.StudentsDetails
             return studentDetails;
         }
 
-        public StudentDetails UpdateStudentDetails(int id, StudentDetails details)
+        public StudentDetails UpdateStudentDetails(StudentDetails details)
         {
-            var student = Context.StudentDetails.FirstOrDefault(s => s.Id == id);
+            var student = Context.StudentDetails.FirstOrDefault(s => s.Id == details.Id);
             if (student != null)
             {
                 student.AdmissionNo = details.AdmissionNo;

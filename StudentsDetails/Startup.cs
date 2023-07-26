@@ -12,6 +12,7 @@ using StudentsDetails.Infrastructure.ActionFilters;
 using StudentsDetails.Infrastructure.Extensions.Automapper;
 using StudentsDetails.Persistence.Context;
 using StudentsDetails.Services.StudentsDetails;
+using System.Security.Claims;
 using System.Text;
 
 namespace StudentsDetails
@@ -81,6 +82,9 @@ namespace StudentsDetails
             services.AddDbContext<StudentsDbContext>(options =>
                                options.UseSqlServer(Configuration.GetConnectionString("StudentsConnectionString")));
             services.ConfigureAutoMapper();
+            services.AddAuthorization(options => {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

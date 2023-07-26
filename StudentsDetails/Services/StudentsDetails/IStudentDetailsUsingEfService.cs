@@ -8,7 +8,7 @@ namespace StudentsDetails.Services.StudentsDetails
         List<StudentDetails> GetAllStudentsDetails();
         StudentDetails GetStudentDetailsById(int id);
         StudentDetails AddStudentDetail(StudentDetails studentDetails);
-        StudentDetails UpdateStudentDetails(int id, StudentDetails details);
+        StudentDetails UpdateStudentDetails(StudentDetails details);
         StudentDetails DeleteStudent(int id);
         string Generate(UserModel model);
         UserModel Authenticate(UserLogin login);
