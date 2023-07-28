@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using StudentsDetails.CrossCuttingConcerns.Constants;
+using StudentsDetails.Infrastructure.Exceptions;
 using StudentsDetails.Model;
 using StudentsDetails.Services.StudentsDetails;
 using System;
@@ -19,8 +19,9 @@ namespace StudentsDetails.Infrastructure.ActionFilters
         {
             if (!context.ModelState.IsValid)
             {
-                context.Result = new UnprocessableEntityObjectResult(context.ModelState);
-                return;
+                throw new UnprocessableEntityObjectException(SwaggerConstants.InvalidModel, context.ModelState);
+                //context.Result = new UnprocessableEntityObjectResult(context.ModelState);
+                //return;
             }
 
             var httpMethod = context.HttpContext.Request.Method;
@@ -36,16 +37,19 @@ namespace StudentsDetails.Infrastructure.ActionFilters
 
             if (studentModel == null)
             {
-                context.Result = new BadRequestObjectResult(SwaggerConstants.InvalidStudentData);
-                return;
+                throw new BadRequestException(SwaggerConstants.InvalidStudentData);
+
+                //context.Result = new BadRequestObjectResult(SwaggerConstants.InvalidStudentData);
+                //return;
             }
 
-
             var existingStudent = _studentDetailsUsingEfService.GetStudentDetailsById(studentModel.Id);
+
             if (string.Equals(httpMethod, "PUT", StringComparison.OrdinalIgnoreCase) && existingStudent == null)
             {
-                context.Result = new NotFoundObjectResult(SwaggerConstants.InvalidId);
-                return;
+                //context.Result = new NotFoundObjectResult(SwaggerConstants.InvalidId);
+                //return;
+                throw new NotFoundException(SwaggerConstants.InvalidId);
             }
 
             if (existingStudent != null)
@@ -53,7 +57,8 @@ namespace StudentsDetails.Infrastructure.ActionFilters
                 if (string.Equals(httpMethod, "POST", StringComparison.OrdinalIgnoreCase) &&
                     existingStudent.AdmissionNo == studentModel.AdmissionNo)
                 {
-                    context.Result = new ConflictObjectResult(SwaggerConstants.StudentAlreadyExists);
+                    throw new ConflictObjectException(SwaggerConstants.StudentAlreadyExists);
+                    // context.Result = new ConflictObjectResult(SwaggerConstants.StudentAlreadyExists);
                 }
 
             }

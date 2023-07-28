@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StudentsDetails.Infrastructure.ActionFilters;
 using StudentsDetails.Infrastructure.Extensions.Automapper;
+using StudentsDetails.Infrastructure.Middlewares;
 using StudentsDetails.Persistence.Context;
 using StudentsDetails.Services.StudentsDetails;
 using System.Security.Claims;
@@ -41,6 +42,7 @@ namespace StudentsDetails
                     ValidAudience = Configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 });
+            services.AddTransient<ExceptionHandlingMiddleware>();
             services.AddControllers();
             services.AddScoped<RequestValidationFilterAttribute>();
             services.AddScoped<ValidateIdAttribute>();
@@ -77,6 +79,8 @@ namespace StudentsDetails
         }
     });
             });
+
+            
             services.AddScoped<IStudentDetailsService, StudentDetailsService>();
             services.AddScoped<IStudentDetailsUsingEfService, StudentDetailsUsingEfService>();
             services.AddDbContext<StudentsDbContext>(options =>
@@ -96,10 +100,11 @@ namespace StudentsDetails
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentsDetails v1"));
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.ConfigureExceptionMiddleware();
 
             app.UseAuthentication();
 

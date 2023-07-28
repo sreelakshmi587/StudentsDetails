@@ -25,5 +25,6 @@
 
         public const string InvalidStudentData = "Invalid Student Data";
         public const string InvalidId = "Invalid Id";
+        public const string InvalidModel = "Invalid Model";
     }
 }

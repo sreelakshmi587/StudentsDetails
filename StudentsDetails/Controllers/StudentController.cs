@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using StudentsDetails.CrossCuttingConcerns.Constants;
 using StudentsDetails.Infrastructure.ActionFilters;
 using StudentsDetails.Infrastructure.ViewModels;
@@ -21,18 +22,21 @@ namespace StudentsDetails.Controllers
     {
         private readonly IConfiguration _config;
         private IMapper Mapper { get; }
+        private readonly ILogger<StudentController> _logger;
         private IStudentDetailsService StudentDetailsService { get; }
         private IStudentDetailsUsingEfService StudentDetailsUsingEfService { get; }
         private readonly StudentsDbContext Context;
 
         public StudentController(IConfiguration config
             , IMapper mapper
+            , ILogger<StudentController> logger
             , IStudentDetailsService studentDetailsService
             , IStudentDetailsUsingEfService studentDetailsUsingEfService
             , StudentsDbContext context)
         {
             _config = config;
             Mapper = mapper;
+            _logger = logger;
             StudentDetailsService = studentDetailsService;
             StudentDetailsUsingEfService = studentDetailsUsingEfService;
             Context = context;
@@ -90,7 +94,9 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status404NotFound, SwaggerConstants.StudentDetailsNotFound)]
         public ActionResult<List<StudentDetailsResponse>> GetAllStudentsDetails()
         {
+            _logger.LogInformation("Beginning to access all students details...");
             var studentList = StudentDetailsUsingEfService.GetAllStudentsDetails();
+            _logger.LogInformation($"Accessed all details of {studentList.Count} students");
 
             return Mapper.Map<List<StudentDetailsResponse>>(studentList);
         }

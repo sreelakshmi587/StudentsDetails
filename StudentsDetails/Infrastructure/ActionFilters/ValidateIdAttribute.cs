@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using StudentsDetails.CrossCuttingConcerns.Constants;
+using StudentsDetails.Infrastructure.Exceptions;
 using StudentsDetails.Services.StudentsDetails;
 using System;
 
@@ -17,12 +17,14 @@ namespace StudentsDetails.Infrastructure.ActionFilters
         {
             if (!int.TryParse(context.RouteData.Values["id"]?.ToString(), out int id))
             {
-                context.Result = new BadRequestObjectResult(SwaggerConstants.InvalidId);
+                throw new BadRequestException(SwaggerConstants.InvalidId);
+                //context.Result = new BadRequestObjectResult(SwaggerConstants.InvalidId);
             }
             var student = _studentDetailsUsingEfService.GetStudentDetailsById(id);
             if (student == null)
             {
-                context.Result = new NotFoundObjectResult(SwaggerConstants.StudentDetailsByIdNotFound);
+                throw new NotFoundException(SwaggerConstants.StudentDetailsByIdNotFound);
+                //context.Result = new NotFoundObjectResult(SwaggerConstants.StudentDetailsByIdNotFound);
             }
         }
         public void OnActionExecuted(ActionExecutedContext context)
