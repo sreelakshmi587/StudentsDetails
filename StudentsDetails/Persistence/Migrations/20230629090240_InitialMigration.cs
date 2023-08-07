@@ -26,18 +26,6 @@ namespace StudentsDetails.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserLogin",
-                schema: "dbo",
-                columns: table => new
-                {
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserModel",
                 schema: "dbo",
                 columns: table => new
@@ -57,9 +45,6 @@ namespace StudentsDetails.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "StudentDetails");
 
-            migrationBuilder.DropTable(
-                name: "UserLogin",
-                schema: "dbo");
 
             migrationBuilder.DropTable(
                 name: "UserModel",

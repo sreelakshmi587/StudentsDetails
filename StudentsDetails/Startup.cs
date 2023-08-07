@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StudentsDetails.Infrastructure.ActionFilters;
@@ -13,6 +14,7 @@ using StudentsDetails.Infrastructure.Extensions.Automapper;
 using StudentsDetails.Infrastructure.Middlewares;
 using StudentsDetails.Persistence.Context;
 using StudentsDetails.Services.StudentsDetails;
+using System.IO;
 using System.Security.Claims;
 using System.Text;
 
@@ -92,7 +94,7 @@ namespace StudentsDetails
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -114,6 +116,8 @@ namespace StudentsDetails
             {
                 endpoints.MapControllers();
             });
+
+            loggerFactory.AddFile($@"{ Directory.GetCurrentDirectory()}\Logs\log.txt");
         }
     }
 }

@@ -47,17 +47,6 @@ namespace StudentsDetails.Persistence.Migrations
                     b.ToTable("StudentDetails");
                 });
 
-            modelBuilder.Entity("StudentsDetails.Model.UserLogin", b =>
-                {
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("UserLogin", "dbo");
-                });
-
             modelBuilder.Entity("StudentsDetails.Model.UserModel", b =>
                 {
                     b.Property<string>("Email")

@@ -21,16 +21,32 @@ namespace StudentsDetails.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
-        public IActionResult Login(UserLogin userLogin)
+        [HttpPost("register-users")]
+        public IActionResult Register(UserModel user)
         {
-            var user = StudentDetailsUsingEfService.Authenticate(userLogin);
-            if (user != null)
+            var registeredUser = StudentDetailsUsingEfService.RegisterUser(user);
+
+            return Ok(registeredUser);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult Login(UserModel userModel)
+        {
+            var user = new UserModel()
             {
-                var token = StudentDetailsUsingEfService.Generate(user);
+                UserName = userModel.UserName,
+                Password = userModel.Password
+            };
+            var loggedUser = StudentDetailsUsingEfService.Authenticate(user);
+            if (loggedUser != null)
+            {
+                var token = StudentDetailsUsingEfService.Generate(loggedUser);
                 return Ok(token);
             }
             return NotFound(SwaggerConstants.UserNotFound);
         }
+
+        
     }
 }

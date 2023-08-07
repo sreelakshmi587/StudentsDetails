@@ -12,13 +12,11 @@ namespace StudentsDetails.Persistence.Context
 
         public DbSet<StudentDetails> StudentDetails { get; set; }
         public DbSet<UserModel> UserModels { get; set; }
-        public DbSet<UserLogin> UserLogins { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StudentDetails>().HasKey(s => s.Id);
-            modelBuilder.Entity<UserModel>().HasNoKey();
-            modelBuilder.Entity<UserLogin>().HasNoKey();
+            modelBuilder.Entity<UserModel>();
 
 
         }

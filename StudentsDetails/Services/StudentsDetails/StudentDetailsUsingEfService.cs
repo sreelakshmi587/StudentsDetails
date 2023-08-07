@@ -81,6 +81,13 @@ namespace StudentsDetails.Services.StudentsDetails
             return null;
         }
 
+        public UserModel RegisterUser(UserModel user)
+        {
+            Context.UserModels.Add(user);
+            Context.SaveChanges();
+
+            return user;
+        }
         public string Generate(UserModel model)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -103,7 +110,7 @@ namespace StudentsDetails.Services.StudentsDetails
 
         }
 
-        public UserModel Authenticate(UserLogin login)
+        public UserModel Authenticate(UserModel login)
         {
             var currentUser = Context.UserModels.FirstOrDefault(o => o.UserName.ToLower() == login.UserName.ToLower()
             && o.Password == login.Password);
