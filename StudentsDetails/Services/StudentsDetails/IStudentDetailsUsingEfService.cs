@@ -12,6 +12,6 @@ namespace StudentsDetails.Services.StudentsDetails
         StudentDetails DeleteStudent(int id);
         UserModel RegisterUser(UserModel user);
         string Generate(UserModel model);
-        public UserModel Authenticate(UserModel login);
+        UserModel Authenticate(UserModel login);
     }
 }
