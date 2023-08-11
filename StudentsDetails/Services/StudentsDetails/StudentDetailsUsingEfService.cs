@@ -92,8 +92,16 @@ namespace StudentsDetails.Services.StudentsDetails
                 Email = user.Email,
                 Role = user.Role
             };
-            Context.UserModels.Add(registeredUser);
-            Context.SaveChanges();
+            var existingUser = Context.UserModels.Where(s => s.Email == registeredUser.Email).FirstOrDefault();
+            if (existingUser == null)
+            {
+                Context.UserModels.Add(registeredUser);
+                Context.SaveChanges();
+            }
+            else
+            {
+                return null;
+            }
 
             return registeredUser;
         }
@@ -123,7 +131,7 @@ namespace StudentsDetails.Services.StudentsDetails
         {
             var usersWithMatchingUsername = Context.UserModels
                 .Where(u => u.UserName.ToLower() == login.UserName.ToLower())
-                .ToList(); 
+                .ToList();
 
             var currentUser = usersWithMatchingUsername
                 .FirstOrDefault(u => DecryptPassword(u.Password) == login.Password);

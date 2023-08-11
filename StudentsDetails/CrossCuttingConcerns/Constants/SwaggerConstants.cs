@@ -22,6 +22,7 @@
         public const string DeletesStudentDetails = "Deletes student details";
         public const string StudentDetailsDeleted = "Student details deleted";
         public const string UserNotFound = "User Not Found";
+        public const string RegisteredUser = "User has been already registered";
 
         public const string InvalidStudentData = "Invalid Student Data";
         public const string InvalidId = "Invalid Id";

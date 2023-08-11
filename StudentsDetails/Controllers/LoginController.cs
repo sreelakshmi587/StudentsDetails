@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
 using StudentsDetails.Model;
 using StudentsDetails.Services.StudentsDetails;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace StudentsDetails.Controllers
 {
@@ -25,12 +26,17 @@ namespace StudentsDetails.Controllers
         public IActionResult Register(UserModel user)
         {
             var registeredUser = StudentDetailsUsingEfService.RegisterUser(user);
+            if (registeredUser == null)
+            {
+                return Conflict(SwaggerConstants.RegisteredUser);
+            }
 
             return Ok(registeredUser);
         }
 
         [AllowAnonymous]
         [HttpPost]
+        [SwaggerOperation(Summary = "Login")]
         public IActionResult Login(UserModel userModel)
         {
             var user = new UserModel()
@@ -46,7 +52,5 @@ namespace StudentsDetails.Controllers
             }
             return NotFound(SwaggerConstants.UserNotFound);
         }
-
-        
     }
 }

@@ -56,6 +56,7 @@ namespace StudentsDetails
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentsDetails", Version = "v1" });
                 c.EnableAnnotations();
+                c.OperationFilter<SwaggerCustomFilter>();
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

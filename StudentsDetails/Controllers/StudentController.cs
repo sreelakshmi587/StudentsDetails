@@ -122,7 +122,6 @@ namespace StudentsDetails.Controllers
         [SwaggerResponse(StatusCodes.Status409Conflict, SwaggerConstants.StudentDetailsByIdNotFound)]
         public ActionResult<StudentDetailsResponse> AddStudentDetails(StudentDetails studentDetails)
         {
-
             var newStudent = StudentDetailsUsingEfService.AddStudentDetail(studentDetails);
 
             return Ok(Mapper.Map<StudentDetailsResponse>(newStudent));
@@ -141,7 +140,6 @@ namespace StudentsDetails.Controllers
             var student = StudentDetailsUsingEfService.UpdateStudentDetails(studentDetails);
 
             return Ok(Mapper.Map<StudentDetailsResponse>(student));
-
         }
 
         [HttpDelete("delete-student-details/{id}")]

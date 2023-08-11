@@ -17,8 +17,6 @@ namespace StudentsDetails.Persistence.Context
         {
             modelBuilder.Entity<StudentDetails>().HasKey(s => s.Id);
             modelBuilder.Entity<UserModel>();
-
-
         }
     }
 }
