@@ -38,6 +38,34 @@ namespace StudentsDetails.Infrastructure.ActionFilters
                     }
                     };
                 }
+
+                if (context.MethodInfo.Name == "Register")
+                {
+                    var schema = new OpenApiSchema
+                    {
+                        Type = "object",
+                        Properties = new Dictionary<string, OpenApiSchema>
+                    {
+                        { "UserName", new OpenApiSchema { Type = "string" } },
+                        { "Password", new OpenApiSchema { Type = "string" } },
+                        { "Email", new OpenApiSchema { Type = "string" } },
+                        { "Role", new OpenApiSchema { Type = "string" } }
+                    }
+                    };
+
+                    operation.RequestBody = new OpenApiRequestBody
+                    {
+                        Content = new Dictionary<string, OpenApiMediaType>
+                    {
+                        {
+                            "application/json", new OpenApiMediaType
+                            {
+                                Schema = schema
+                            }
+                        }
+                    }
+                    };
+                }
             }
         }
     }

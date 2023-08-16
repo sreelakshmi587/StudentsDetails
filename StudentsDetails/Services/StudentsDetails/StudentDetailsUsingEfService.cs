@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace StudentsDetails.Services.StudentsDetails
@@ -85,14 +86,20 @@ namespace StudentsDetails.Services.StudentsDetails
 
         public UserModel RegisterUser(UserModel user)
         {
+            var salt = GenerateSalt();
+            var hashedPassword = HashPassword(user.Password, salt);
+
             var registeredUser = new UserModel()
             {
                 UserName = user.UserName,
-                Password = EncryptPassword(user.Password),
+                Password = hashedPassword,
+                Salt = salt,
                 Email = user.Email,
                 Role = user.Role
             };
-            var existingUser = Context.UserModels.Where(s => s.Email == registeredUser.Email).FirstOrDefault();
+
+            var existingUser = Context.UserModels.FirstOrDefault(u => u.Email == registeredUser.Email && u.Role == registeredUser.Role);
+
             if (existingUser == null)
             {
                 Context.UserModels.Add(registeredUser);
@@ -105,6 +112,33 @@ namespace StudentsDetails.Services.StudentsDetails
 
             return registeredUser;
         }
+        
+
+        private static string GenerateSalt()
+        {
+            byte[] saltBytes = new byte[16]; 
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(saltBytes);
+            }
+            return Convert.ToBase64String(saltBytes);
+        }
+
+        private static string HashPassword(string password, string salt)
+        {
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), 10000))
+            {
+                byte[] hashBytes = pbkdf2.GetBytes(256 / 8); 
+                return Convert.ToBase64String(hashBytes);
+            }
+        }
+
+        private static bool VerifyPassword(string password, string passwordHash, string salt)
+        {
+            var hashedPassword = HashPassword(password, salt);
+            return hashedPassword == passwordHash;
+        }
+
         public string Generate(UserModel model)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -129,46 +163,14 @@ namespace StudentsDetails.Services.StudentsDetails
 
         public UserModel Authenticate(UserModel login)
         {
-            var usersWithMatchingUsername = Context.UserModels
-                .Where(u => u.UserName.ToLower() == login.UserName.ToLower())
-                .ToList();
+            var user = Context.UserModels.FirstOrDefault(u => u.UserName.ToLower() == login.UserName.ToLower());
 
-            var currentUser = usersWithMatchingUsername
-                .FirstOrDefault(u => DecryptPassword(u.Password) == login.Password);
-
-            if (currentUser != null)
+            if (user != null && VerifyPassword(login.Password, user.Password, user.Salt))
             {
-                return currentUser;
+                return user;
             }
+
             return null;
-        }
-
-        private static string EncryptPassword(string password)
-        {
-            if (string.IsNullOrEmpty(password))
-            {
-                return null;
-            }
-            else
-            {
-                byte[] storedPassword = ASCIIEncoding.ASCII.GetBytes(password);
-                string encryptedPassword = Convert.ToBase64String(storedPassword);
-                return encryptedPassword;
-            }
-        }
-
-        private static string DecryptPassword(string password)
-        {
-            if (string.IsNullOrEmpty(password))
-            {
-                return null;
-            }
-            else
-            {
-                byte[] encryptedPassword = Convert.FromBase64String(password);
-                string decryptedPassword = ASCIIEncoding.ASCII.GetString(encryptedPassword);
-                return decryptedPassword;
-            }
         }
     }
 }

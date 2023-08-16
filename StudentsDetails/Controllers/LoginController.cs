@@ -23,6 +23,8 @@ namespace StudentsDetails.Controllers
 
         [AllowAnonymous]
         [HttpPost("register-users")]
+        [SwaggerOperation(Summary = "Register")]
+
         public IActionResult Register(UserModel user)
         {
             var registeredUser = StudentDetailsUsingEfService.RegisterUser(user);

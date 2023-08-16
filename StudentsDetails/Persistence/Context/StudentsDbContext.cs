@@ -16,7 +16,7 @@ namespace StudentsDetails.Persistence.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StudentDetails>().HasKey(s => s.Id);
-            modelBuilder.Entity<UserModel>();
+            modelBuilder.Entity<UserModel>().HasKey(s => s.Id);
         }
     }
 }
