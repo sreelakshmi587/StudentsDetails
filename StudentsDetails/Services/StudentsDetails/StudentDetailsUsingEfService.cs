@@ -95,10 +95,10 @@ namespace StudentsDetails.Services.StudentsDetails
                 Password = hashedPassword,
                 Salt = salt,
                 Email = user.Email,
-                Role = user.Role
+                Roles = string.Join(",", user.Roles)
             };
 
-            var existingUser = Context.UserModels.FirstOrDefault(u => u.Email == registeredUser.Email && u.Role == registeredUser.Role);
+            var existingUser = Context.UserModels.FirstOrDefault(u => u.Email == registeredUser.Email && u.Roles == registeredUser.Roles);
 
             if (existingUser == null)
             {
@@ -144,16 +144,19 @@ namespace StudentsDetails.Services.StudentsDetails
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var roleClaims = model.Roles.Split(',').Select(role => new Claim(ClaimTypes.Role, role));
+
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, model.UserName),
                 new Claim(ClaimTypes.Email, model.Email),
-                new Claim(ClaimTypes.Role, model.Role)
             };
+            claims.AddRange(roleClaims);
+
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"]
                 , _config["Jwt:Audience"]
-                , claims
+                , claims.ToArray()
                 , expires: DateTime.Now.AddMinutes(15)
                 , signingCredentials: credentials);
 
