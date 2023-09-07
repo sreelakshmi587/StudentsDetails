@@ -40,7 +40,7 @@ namespace StudentsDetails.Controllers
         [AllowAnonymous]
         [HttpPost]
         [SwaggerOperation(Summary = "Login")]
-        public IActionResult Login(UserModel userModel)
+        public IActionResult Login(UserModelResponse userModel)
         {
             var user = new UserModel()
             {
