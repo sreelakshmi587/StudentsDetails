@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
@@ -14,11 +15,14 @@ namespace StudentsDetails.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private IMapper Mapper { get; }
         private IStudentDetailsUsingEfService StudentDetailsUsingEfService { get; }
         public LoginController(IConfiguration config
+            , IMapper mapper 
             , IStudentDetailsUsingEfService studentDetailsUsingEfService)
         {
             _config = config;
+            Mapper = mapper;
             StudentDetailsUsingEfService = studentDetailsUsingEfService;
         }
 
@@ -26,7 +30,7 @@ namespace StudentsDetails.Controllers
         [HttpPost("register-users")]
         [SwaggerOperation(Summary = "Register")]
 
-        public IActionResult Register(UserModelResponse user)
+        public ActionResult<UserModelResponse> Register(UserModelResponse user)
         {
             var registeredUser = StudentDetailsUsingEfService.RegisterUser(user);
             if (registeredUser == null)
@@ -34,7 +38,7 @@ namespace StudentsDetails.Controllers
                 return Conflict(SwaggerConstants.RegisteredUser);
             }
 
-            return Ok(registeredUser);
+            return Ok(Mapper.Map<UserModelResponse>( registeredUser));
         }
 
         [AllowAnonymous]
