@@ -9,8 +9,8 @@ using StudentsDetails.Persistence.Context;
 namespace StudentsDetails.Persistence.Migrations
 {
     [DbContext(typeof(StudentsDbContext))]
-    [Migration("20230629090240_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230905062118_ChangedRolesToArray")]
+    partial class ChangedRolesToArray
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,30 +49,29 @@ namespace StudentsDetails.Persistence.Migrations
                     b.ToTable("StudentDetails");
                 });
 
-            modelBuilder.Entity("StudentsDetails.Model.UserLogin", b =>
-                {
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("UserLogin", "dbo");
-                });
-
             modelBuilder.Entity("StudentsDetails.Model.UserModel", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("Roles")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("UserModel", "dbo");
                 });

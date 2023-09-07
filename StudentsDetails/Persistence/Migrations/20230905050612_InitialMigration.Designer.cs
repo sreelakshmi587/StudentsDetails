@@ -9,8 +9,8 @@ using StudentsDetails.Persistence.Context;
 namespace StudentsDetails.Persistence.Migrations
 {
     [DbContext(typeof(StudentsDbContext))]
-    [Migration("20230821100217_AddedRolesProperty")]
-    partial class AddedRolesProperty
+    [Migration("20230905050612_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

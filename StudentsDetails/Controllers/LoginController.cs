@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
+using StudentsDetails.Infrastructure.ViewModels;
 using StudentsDetails.Model;
 using StudentsDetails.Services.StudentsDetails;
 using Swashbuckle.AspNetCore.Annotations;
@@ -25,7 +26,7 @@ namespace StudentsDetails.Controllers
         [HttpPost("register-users")]
         [SwaggerOperation(Summary = "Register")]
 
-        public IActionResult Register(UserModel user)
+        public IActionResult Register(UserModelResponse user)
         {
             var registeredUser = StudentDetailsUsingEfService.RegisterUser(user);
             if (registeredUser == null)

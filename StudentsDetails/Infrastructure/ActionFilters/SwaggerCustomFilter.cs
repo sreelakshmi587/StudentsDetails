@@ -49,8 +49,16 @@ namespace StudentsDetails.Infrastructure.ActionFilters
                         { "UserName", new OpenApiSchema { Type = "string" } },
                         { "Password", new OpenApiSchema { Type = "string" } },
                         { "Email", new OpenApiSchema { Type = "string" } },
-                        { "Role", new OpenApiSchema { Type = "string" } }
-                    }
+                        {"RolesArray", new OpenApiSchema
+                            {
+                                Type = "array",
+                                Items = new OpenApiSchema
+                                {
+                                    Type = "string"
+                                }
+                            }
+                        } }
+
                     };
 
                     operation.RequestBody = new OpenApiRequestBody

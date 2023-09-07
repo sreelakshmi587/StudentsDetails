@@ -4,11 +4,12 @@ using StudentsDetails.Model;
 
 namespace StudentsDetails.Controllers
 {
-    public class StudentsModelMapping : Profile
+    public class ModelMapping : Profile
     {
-        public StudentsModelMapping()
+        public ModelMapping()
         {
             CreateMap<StudentDetails, StudentDetailsResponse>().ReverseMap();
+            CreateMap<UserModel, UserModelResponse>().ReverseMap();
         }
     }
 }

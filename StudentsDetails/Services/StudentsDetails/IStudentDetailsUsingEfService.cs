@@ -1,4 +1,5 @@
-﻿using StudentsDetails.Model;
+﻿using StudentsDetails.Infrastructure.ViewModels;
+using StudentsDetails.Model;
 using System.Collections.Generic;
 
 namespace StudentsDetails.Services.StudentsDetails
@@ -10,7 +11,7 @@ namespace StudentsDetails.Services.StudentsDetails
         StudentDetails AddStudentDetail(StudentDetails studentDetails);
         StudentDetails UpdateStudentDetails(StudentDetails details);
         StudentDetails DeleteStudent(int id);
-        UserModel RegisterUser(UserModel user);
+        UserModel RegisterUser(UserModelResponse user);
         string Generate(UserModel model);
         UserModel Authenticate(UserModel login);
     }

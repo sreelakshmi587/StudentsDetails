@@ -30,13 +30,17 @@ namespace StudentsDetails.Persistence.Migrations
                 schema: "dbo",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Roles = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Salt = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_UserModel", x => x.Id);
                 });
         }
 
@@ -44,7 +48,6 @@ namespace StudentsDetails.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "StudentDetails");
-
 
             migrationBuilder.DropTable(
                 name: "UserModel",

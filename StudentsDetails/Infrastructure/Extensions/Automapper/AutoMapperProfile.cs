@@ -15,7 +15,7 @@ namespace StudentsDetails.Infrastructure.Extensions.Automapper
 
             services
                 .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
-                .AddAutoMapper(x => x.AddProfile(new StudentsModelMapping()));
+                .AddAutoMapper(x => x.AddProfile(new ModelMapping()));
 
             return services;
         }
