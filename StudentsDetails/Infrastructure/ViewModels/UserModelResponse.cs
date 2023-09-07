@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace StudentsDetails.Infrastructure.ViewModels
+﻿namespace StudentsDetails.Infrastructure.ViewModels
 {
     public class UserModelResponse
     {

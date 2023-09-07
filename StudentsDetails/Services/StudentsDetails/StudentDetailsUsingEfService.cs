@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using StudentsDetails.Infrastructure.ViewModels;
 using StudentsDetails.Model;
 using StudentsDetails.Persistence.Context;
@@ -97,7 +96,7 @@ namespace StudentsDetails.Services.StudentsDetails
                 Password = hashedPassword,
                 Salt = salt,
                 Email = user.Email,
-                Roles  = user.Roles
+                Roles = user.Roles
             };
 
             var existingUser = Context.UserModels.FirstOrDefault(u => u.Email == registeredUser.Email && u.Roles == registeredUser.Roles);
@@ -114,11 +113,11 @@ namespace StudentsDetails.Services.StudentsDetails
 
             return registeredUser;
         }
-        
+
 
         private static string GenerateSalt()
         {
-            byte[] saltBytes = new byte[16]; 
+            byte[] saltBytes = new byte[16];
             using (var rng = new RNGCryptoServiceProvider())
             {
                 rng.GetBytes(saltBytes);
@@ -130,7 +129,7 @@ namespace StudentsDetails.Services.StudentsDetails
         {
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), 10000))
             {
-                byte[] hashBytes = pbkdf2.GetBytes(256 / 8); 
+                byte[] hashBytes = pbkdf2.GetBytes(256 / 8);
                 return Convert.ToBase64String(hashBytes);
             }
         }
@@ -146,7 +145,7 @@ namespace StudentsDetails.Services.StudentsDetails
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-           var roleClaims = model.Roles.Split(',').Select(role => new Claim(ClaimTypes.Role, role));
+            var roleClaims = model.Roles.Split(',').Select(role => new Claim(ClaimTypes.Role, role));
 
             var claims = new List<Claim>
             {
@@ -154,7 +153,7 @@ namespace StudentsDetails.Services.StudentsDetails
                 new Claim(ClaimTypes.Email, model.Email),
             };
             claims.AddRange(roleClaims);
-            
+
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"]
                 , _config["Jwt:Audience"]
@@ -162,7 +161,7 @@ namespace StudentsDetails.Services.StudentsDetails
                 , expires: DateTime.Now.AddMinutes(15)
                 , signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);    
+            return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
 
