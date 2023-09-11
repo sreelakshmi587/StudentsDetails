@@ -12,7 +12,7 @@ namespace StudentsDetails.Services.StudentsDetails
         StudentDetails UpdateStudentDetails(StudentDetails details);
         StudentDetails DeleteStudent(int id);
         UserModel RegisterUser(UserModelResponse user);
-        string Generate(UserModel model);
-        UserModel Authenticate(UserModel login);
+        string Generate(UserModelResponse model);
+        UserModelResponse Authenticate(UserModelResponse login);
     }
 }

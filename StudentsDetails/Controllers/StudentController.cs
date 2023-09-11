@@ -134,7 +134,7 @@ namespace StudentsDetails.Controllers
         [SwaggerOperation(SwaggerConstants.UpdateStudentDetails)]
         [SwaggerResponse(StatusCodes.Status200OK, SwaggerConstants.StudentDetailsUpdated)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, SwaggerConstants.BadRequestMessage)]
-        public ActionResult<StudentDetailsResponse> UpdateStudentDetails([FromBody]StudentDetails studentDetails)
+        public ActionResult<StudentDetailsResponse> UpdateStudentDetails([FromBody] StudentDetails studentDetails)
         {
 
             var student = StudentDetailsUsingEfService.UpdateStudentDetails(studentDetails);

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentsDetails.CrossCuttingConcerns.Constants;
 using StudentsDetails.Infrastructure.ViewModels;
-using StudentsDetails.Model;
 using StudentsDetails.Services.StudentsDetails;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -18,7 +17,7 @@ namespace StudentsDetails.Controllers
         private IMapper Mapper { get; }
         private IStudentDetailsUsingEfService StudentDetailsUsingEfService { get; }
         public LoginController(IConfiguration config
-            , IMapper mapper 
+            , IMapper mapper
             , IStudentDetailsUsingEfService studentDetailsUsingEfService)
         {
             _config = config;
@@ -38,7 +37,7 @@ namespace StudentsDetails.Controllers
                 return Conflict(SwaggerConstants.RegisteredUser);
             }
 
-            return Ok(Mapper.Map<UserModelResponse>( registeredUser));
+            return Ok(Mapper.Map<UserModelResponse>(registeredUser));
         }
 
         [AllowAnonymous]
@@ -46,7 +45,7 @@ namespace StudentsDetails.Controllers
         [SwaggerOperation(Summary = "Login")]
         public IActionResult Login(UserModelResponse userModel)
         {
-            var user = new UserModel()
+            var user = new UserModelResponse()
             {
                 UserName = userModel.UserName,
                 Password = userModel.Password

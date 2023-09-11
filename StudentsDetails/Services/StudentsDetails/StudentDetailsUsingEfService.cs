@@ -140,7 +140,7 @@ namespace StudentsDetails.Services.StudentsDetails
             return hashedPassword == passwordHash;
         }
 
-        public string Generate(UserModel model)
+        public string Generate(UserModelResponse model)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -165,16 +165,26 @@ namespace StudentsDetails.Services.StudentsDetails
 
         }
 
-        public UserModel Authenticate(UserModel login)
+        public UserModelResponse Authenticate(UserModelResponse login)
         {
             var user = Context.UserModels.FirstOrDefault(u => u.UserName.ToLower() == login.UserName.ToLower());
 
             if (user != null && VerifyPassword(login.Password, user.Password, user.Salt))
             {
-                return user;
+                var userResponse = new UserModelResponse()
+                {
+                    UserName = user.UserName,
+                    Password = user.Password,
+                    Email = user.Email,
+                    Roles = user.Roles,
+                    RolesArray= user.RolesArray
+                };
+                return userResponse;
             }
 
             return null;
         }
+
+       
     }
 }
