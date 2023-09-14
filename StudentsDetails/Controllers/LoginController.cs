@@ -29,7 +29,7 @@ namespace StudentsDetails.Controllers
         [HttpPost("register-users")]
         [SwaggerOperation(Summary = "Register")]
 
-        public ActionResult<UserModelResponse> Register(UserModelResponse user)
+        public ActionResult<UserViewModel> Register(UserViewModel user)
         {
             var registeredUser = StudentDetailsUsingEfService.RegisterUser(user);
             if (registeredUser == null)
@@ -37,15 +37,15 @@ namespace StudentsDetails.Controllers
                 return Conflict(SwaggerConstants.RegisteredUser);
             }
 
-            return Ok(Mapper.Map<UserModelResponse>(registeredUser));
+            return Ok(Mapper.Map<UserViewModel>(registeredUser));
         }
 
         [AllowAnonymous]
         [HttpPost]
         [SwaggerOperation(Summary = "Login")]
-        public IActionResult Login(UserModelResponse userModel)
+        public IActionResult Login(UserViewModel userModel)
         {
-            var user = new UserModelResponse()
+            var user = new UserViewModel()
             {
                 UserName = userModel.UserName,
                 Password = userModel.Password

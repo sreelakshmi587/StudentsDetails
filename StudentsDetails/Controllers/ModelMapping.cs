@@ -9,7 +9,7 @@ namespace StudentsDetails.Controllers
         public ModelMapping()
         {
             CreateMap<StudentDetails, StudentDetailsResponse>().ReverseMap();
-            CreateMap<UserModel, UserModelResponse>().ReverseMap();
+            CreateMap<UserModel, UserViewModel>().ReverseMap();
         }
     }
 }

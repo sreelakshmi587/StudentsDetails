@@ -11,8 +11,8 @@ namespace StudentsDetails.Services.StudentsDetails
         StudentDetails AddStudentDetail(StudentDetails studentDetails);
         StudentDetails UpdateStudentDetails(StudentDetails details);
         StudentDetails DeleteStudent(int id);
-        UserModel RegisterUser(UserModelResponse user);
-        string Generate(UserModelResponse model);
-        UserModelResponse Authenticate(UserModelResponse login);
+        UserModel RegisterUser(UserViewModel user);
+        string Generate(UserViewModel model);
+        UserViewModel Authenticate(UserViewModel login);
     }
 }

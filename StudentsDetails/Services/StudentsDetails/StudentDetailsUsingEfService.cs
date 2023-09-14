@@ -85,7 +85,7 @@ namespace StudentsDetails.Services.StudentsDetails
 
         //For Login Controller
 
-        public UserModel RegisterUser(UserModelResponse user)
+        public UserModel RegisterUser(UserViewModel user)
         {
             var salt = GenerateSalt();
             var hashedPassword = HashPassword(user.Password, salt);
@@ -140,7 +140,7 @@ namespace StudentsDetails.Services.StudentsDetails
             return hashedPassword == passwordHash;
         }
 
-        public string Generate(UserModelResponse model)
+        public string Generate(UserViewModel model)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -165,13 +165,13 @@ namespace StudentsDetails.Services.StudentsDetails
 
         }
 
-        public UserModelResponse Authenticate(UserModelResponse login)
+        public UserViewModel Authenticate(UserViewModel login)
         {
             var user = Context.UserModels.FirstOrDefault(u => u.UserName.ToLower() == login.UserName.ToLower());
 
             if (user != null && VerifyPassword(login.Password, user.Password, user.Salt))
             {
-                var userResponse = new UserModelResponse()
+                var userResponse = new UserViewModel()
                 {
                     UserName = user.UserName,
                     Password = user.Password,
